@@ -1,0 +1,25 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: temperature-and-humidity-mapper
+  labels:
+    app: temperature-and-humidity
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: temperature-and-humidity
+  template:
+    metadata:
+      labels:
+        app: temperature-and-humidity
+    spec:
+      hostNetwork: true
+      nodeSelector:
+        name: "edge-zero01"
+      containers:
+      - name: temperature-and-humidity
+        image: edge-temperature-and-humidity:v1
+        imagePullPolicy: IfNotPresent
+        securityContext:
+          privileged: true

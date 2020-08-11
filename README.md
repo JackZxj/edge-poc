@@ -1,7 +1,11 @@
 # EDGE POC
 
+## env
+
 kubernetes version: v1.17.0
 kubeedge version: v1.3.1
+
+raspberry-zero w1.1 with RaspbianOS
 
 ## prepare k8s
 
@@ -27,7 +31,9 @@ kubectl apply -f ./CRDs/reliablesyncs/objectsync_v1alpha1.yaml
 ## kubeedge for test
 
 ``` BASH
+
 #################### setup cloud side ####################
+
 # prepare kubeedge cloudcore config file
 cloudcore --minconfig > cloudcore.yaml
 
@@ -35,6 +41,7 @@ cloudcore --minconfig > cloudcore.yaml
 cloudcore --config cloudcore.yaml
 
 #################### setup edge side ####################
+
 # prepare kubeedge edgecore config file
 edgecore --minconfig > edgecore.yaml
 

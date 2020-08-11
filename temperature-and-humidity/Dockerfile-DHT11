@@ -1,9 +1,10 @@
-FROM golang:1.12-alpine3.10
+FROM arm32v6/golang:1.12-alpine3.10
 
-RUN apk add gcc libc-dev git
+RUN echo http://mirrors.ustc.edu.cn/alpine/v3.10/main > /etc/apk/repositories; \
+    echo http://mirrors.ustc.edu.cn/alpine/v3.10/community >> /etc/apk/repositories; \
+    apk add gcc libc-dev --no-cache
 
-COPY ./src $GOPATH/src/temperature-and-humidity/src
-COPY ./vendor $GOPATH/src/temperature-and-humidity/vendor
+COPY . $GOPATH/src/temperature-and-humidity
 
 ENV GO111MODULE=off DHT11PIN=11
 
