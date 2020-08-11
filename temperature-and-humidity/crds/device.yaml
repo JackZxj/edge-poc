@@ -1,0 +1,28 @@
+apiVersion: devices.kubeedge.io/v1alpha1
+kind: Device
+metadata:
+  name: temperature-and-humidity
+  labels:
+    description: 'Temperature and Relative humidity'
+spec:
+  deviceModelRef:
+    name: tmp-rh-model
+  nodeSelector:
+    nodeSelectorTerms:
+      - matchExpressions:
+          - key: ''
+            operator: In
+            values:
+              - raspberry-pi
+status:
+  twins:
+    - propertyName: temperature-status
+      desired:
+        metadata:
+          type: string
+        value: ''
+    - propertyName: humidity-status
+      desired:
+        metadata:
+          type: string
+        value: ''

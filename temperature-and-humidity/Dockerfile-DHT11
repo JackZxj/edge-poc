@@ -1,0 +1,17 @@
+FROM golang:1.12-alpine3.10
+
+RUN apk add gcc libc-dev git
+
+COPY ./src $GOPATH/src/temperature-and-humidity/src
+COPY ./vendor $GOPATH/src/temperature-and-humidity/vendor
+
+ENV GO111MODULE=off DHT11PIN=11
+
+WORKDIR $GOPATH/src/temperature-and-humidity/src
+
+RUN go build -v -o /go/bin/temperature-and-humidity && \
+    chmod u+x /go/bin/temperature-and-humidity
+
+WORKDIR /go/bin/
+
+CMD ["temperature-and-humidity"]
