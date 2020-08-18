@@ -10,10 +10,10 @@ spec:
   nodeSelector:
     nodeSelectorTerms:
       - matchExpressions:
-          - key: ''
+          - key: 'kubernetes.io/hostname'
             operator: In
             values:
-              - edge-zero01
+              - edge-zero02
 status:
   twins:
     - propertyName: temperature-status
