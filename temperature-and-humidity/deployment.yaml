@@ -22,7 +22,7 @@ spec:
         image: edge-temperature-and-humidity:v1
         env:
         - name: DHT11PIN
-          value: 18
+          value: "18"
         imagePullPolicy: IfNotPresent
         securityContext:
           privileged: true

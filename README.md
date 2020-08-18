@@ -148,7 +148,7 @@ mosquitto_pub -t hello -h localhost -m "hello world!"
 
 ``` BASH
 
-#################### setup cloud side ####################
+######################################## setup cloud side ########################################
 
 # prepare kubeedge cloudcore config file
 ./cloudcore --minconfig > cloudcore.yaml
@@ -157,7 +157,8 @@ mosquitto_pub -t hello -h localhost -m "hello world!"
 ./cloudcore --config cloudcore.yaml
 # run cloudcore(bg)
 nohup ./cloudcore --config cloudcore.yaml > cloudcore.log 2>&1 &
-#################### setup edge side ####################
+
+######################################## setup edge side ########################################
 
 # prepare kubeedge edgecore config file
 ./edgecore --minconfig > edgecore.yaml
@@ -178,16 +179,31 @@ nohup ./edgecore --config edgecore.yaml > edgecore.log 2>&1 &
 
 ...
 
-
 ## run demo
 
 ``` BASH
-# run on edge site
+# run on edge side
 cd temperature-and-humidity
 docker build -f Dockerfile-DHT11 -t edge-temperature-and-humidity:v1 .
 
-# run on cloud site
-kubectl apply ./temperature-and-humidity/crds/devicemodel.yaml
-kubectl apply ./temperature-and-humidity/crds/device.yaml
-kubectl apply ./temperature-and-humidity/deployment.yaml
+# run on cloud side
+kubectl apply -f ./temperature-and-humidity/crds/devicemodel.yaml
+kubectl apply -f ./temperature-and-humidity/crds/device.yaml
+
+# update before apply
+kubectl apply -f ./temperature-and-humidity/deployment.yaml
+
+# get info
+kubectl get device temperature-and-humidity -oyaml -w
+```
+
+``` json
+{
+    "event_id":"",
+    "timestamp":0,
+    "twin":{
+        "humidity-status":{"actual":{"value":"65%"},"metadata":{"type":"Updated humidity"}},
+        "temperature-status":{"actual":{"value":"24C"},"metadata":{"type":"Updated temperature"}}
+    }
+}
 ```

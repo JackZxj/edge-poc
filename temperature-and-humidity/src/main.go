@@ -83,7 +83,11 @@ func main() {
 		}
 
 		// publish temperature status to mqtt broker
-		publishToMqtt(cli, temperature, humidity)
+		err = publishToMqtt(cli, temperature, humidity)
+		if err != nil {
+			lg.Error(err)
+			continue
+		}
 
 		select {
 		// Check for termination request.
@@ -122,19 +126,20 @@ func connectToMqtt() *client.Client {
 	return cli
 }
 
-func publishToMqtt(cli *client.Client, temperature float32, humidity float32) {
+func publishToMqtt(cli *client.Client, temperature float32, humidity float32) error {
 	deviceTwinUpdate := "$hw/events/device/" + DeviceName + "/twin/update"
 
 	status := [2]string{strconv.Itoa(int(temperature)) + "C", strconv.Itoa(int(humidity)) + "%"}
 	updateMessage := createActualUpdateMessage(status)
 	twinUpdateBody, _ := json.Marshal(updateMessage)
-	lg.Infof("update Message: %s", twinUpdateBody)
+	lg.Infof("topic: %s\tupdate Message: %s", deviceTwinUpdate, twinUpdateBody)
 
-	cli.Publish(&client.PublishOptions{
+	err :=  cli.Publish(&client.PublishOptions{
 		TopicName: []byte(deviceTwinUpdate),
 		QoS:       mqtt.QoS0,
 		Message:   twinUpdateBody,
 	})
+	return err
 }
 
 //createActualUpdateMessage function is used to create the device twin update message
