@@ -63,7 +63,7 @@ apt-get install vim
 ``` BASH
 # update hostname
 echo "edge-zero01" > /etc/hostname
-sed -i $'s/127.0.1.1\t\t.*/127.0.1.1\t\tedge-zero01/' /etc/hosts
+sed -i $'s/127.0.1.1\t.*/127.0.1.1\tedge-zero01/' /etc/hosts
 # reboot
 reboot now
 ```

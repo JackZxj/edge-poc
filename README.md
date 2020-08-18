@@ -151,15 +151,16 @@ mosquitto_pub -t hello -h localhost -m "hello world!"
 #################### setup cloud side ####################
 
 # prepare kubeedge cloudcore config file
-cloudcore --minconfig > cloudcore.yaml
+./cloudcore --minconfig > cloudcore.yaml
 
-# run cloudcore
-cloudcore --config cloudcore.yaml
-
+# run cloudcore(fg)
+./cloudcore --config cloudcore.yaml
+# run cloudcore(bg)
+nohup ./cloudcore --config cloudcore.yaml > cloudcore.log 2>&1 &
 #################### setup edge side ####################
 
 # prepare kubeedge edgecore config file
-edgecore --minconfig > edgecore.yaml
+./edgecore --minconfig > edgecore.yaml
 
 # get token form k8s master
 kubectl get secret -nkubeedge tokensecret -o=jsonpath='{.data.tokendata}' | base64 -d
@@ -167,8 +168,10 @@ kubectl get secret -nkubeedge tokensecret -o=jsonpath='{.data.tokendata}' | base
 # insert token into edgecore config
 sed -i -e "s|token: .*|token: ${token}|g" edgecore.yaml
 
-# run
-edgecore --config edgecore.yaml
+# run edgecore(fg)
+./edgecore --config edgecore.yaml
+# run edgecore(bg)
+nohup ./edgecore --config edgecore.yaml > edgecore.log 2>&1 &
 ```
 
 ## kubeedge for production 
