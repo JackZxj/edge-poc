@@ -16,10 +16,13 @@ spec:
     spec:
       hostNetwork: true
       nodeSelector:
-        name: "edge-zero01"
+        kubernetes.io/hostname: "edge-zero02"
       containers:
       - name: temperature-and-humidity
         image: edge-temperature-and-humidity:v1
+        env:
+        - name: DHT11PIN
+          value: 18
         imagePullPolicy: IfNotPresent
         securityContext:
           privileged: true

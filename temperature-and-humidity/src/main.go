@@ -128,6 +128,7 @@ func publishToMqtt(cli *client.Client, temperature float32, humidity float32) {
 	status := [2]string{strconv.Itoa(int(temperature)) + "C", strconv.Itoa(int(humidity)) + "%"}
 	updateMessage := createActualUpdateMessage(status)
 	twinUpdateBody, _ := json.Marshal(updateMessage)
+	lg.Infof("update Message: %s", twinUpdateBody)
 
 	cli.Publish(&client.PublishOptions{
 		TopicName: []byte(deviceTwinUpdate),

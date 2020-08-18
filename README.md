@@ -177,3 +177,17 @@ nohup ./edgecore --config edgecore.yaml > edgecore.log 2>&1 &
 ## kubeedge for production 
 
 ...
+
+
+## run demo
+
+``` BASH
+# run on edge site
+cd temperature-and-humidity
+docker build -f Dockerfile-DHT11 -t edge-temperature-and-humidity:v1 .
+
+# run on cloud site
+kubectl apply ./temperature-and-humidity/crds/devicemodel.yaml
+kubectl apply ./temperature-and-humidity/crds/device.yaml
+kubectl apply ./temperature-and-humidity/deployment.yaml
+```

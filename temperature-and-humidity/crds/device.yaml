@@ -3,7 +3,7 @@ kind: Device
 metadata:
   name: temperature-and-humidity
   labels:
-    description: 'Temperature and Relative humidity'
+    description: temperature-and-humidity
 spec:
   deviceModelRef:
     name: tmp-rh-model
