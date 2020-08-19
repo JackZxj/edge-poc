@@ -1,13 +1,5 @@
 package main
 
-// DeviceName is the name in device.yaml
-var DeviceName = "temperature-and-humidity"
-
-// DeviceTwinProperties is the property list of device twins in device.yaml
-var DeviceTwinProperties = []string {"temperature-status", "humidity-status"}
-
-
-
 //DeviceStateUpdate is the structure used in updating the device state
 type DeviceStateUpdate struct {
 	State string `json:"state,omitempty"`

@@ -18,6 +18,9 @@ import (
 	logger "github.com/d2r2/go-logger"
 )
 
+// DeviceName is the name in device.yaml
+var DeviceName = "temperature-and-humidity"
+
 var lg = logger.NewPackageLogger("main",
 	logger.DebugLevel,
 	// logger.InfoLevel,
@@ -117,7 +120,7 @@ func connectToMqtt() *client.Client {
 	// Connect to the MQTT Server.
 	err := cli.Connect(&client.ConnectOptions{
 		Network:  "tcp",
-		Address:  "localhost:1883",
+		Address:  "192.168.137.65:1883",
 		ClientID: []byte("receive-client"),
 	})
 	if err != nil {
@@ -130,12 +133,11 @@ func connectToMqtt() *client.Client {
 func publishToMqtt(cli *client.Client, temperature float32, humidity float32) error {
 	deviceTwinUpdate := "$hw/events/device/" + DeviceName + "/twin/update"
 
-	status := [2]string{strconv.Itoa(int(temperature)) + "C", strconv.Itoa(int(humidity)) + "%"}
-	updateMessage := createActualUpdateMessage(status)
+	updateMessage := createActualUpdateMessage(strconv.Itoa(int(temperature))+"C", strconv.Itoa(int(humidity))+"%")
 	twinUpdateBody, _ := json.Marshal(updateMessage)
 	lg.Infof("topic: %s\tupdate Message: %s", deviceTwinUpdate, twinUpdateBody)
 
-	err :=  cli.Publish(&client.PublishOptions{
+	err := cli.Publish(&client.PublishOptions{
 		TopicName: []byte(deviceTwinUpdate),
 		QoS:       mqtt.QoS0,
 		Message:   twinUpdateBody,
@@ -144,11 +146,11 @@ func publishToMqtt(cli *client.Client, temperature float32, humidity float32) er
 }
 
 //createActualUpdateMessage function is used to create the device twin update message
-func createActualUpdateMessage(actualValue [2]string) DeviceTwinUpdate {
+func createActualUpdateMessage(temperature, humidity string) DeviceTwinUpdate {
 	var deviceTwinUpdateMessage DeviceTwinUpdate
 	actualMap := map[string]*MsgTwin{
-		DeviceTwinProperties[0]: {Actual: &TwinValue{Value: &actualValue[0]}, Metadata: &TypeMetadata{Type: "Updated temperature"}},
-		DeviceTwinProperties[1]: {Actual: &TwinValue{Value: &actualValue[1]}, Metadata: &TypeMetadata{Type: "Updated humidity"}},
+		"temperature-status": {Actual: &TwinValue{Value: &temperature}, Metadata: &TypeMetadata{Type: "Updated"}},
+		"humidity-status":    {Actual: &TwinValue{Value: &humidity}, Metadata: &TypeMetadata{Type: "Updated"}},
 	}
 	deviceTwinUpdateMessage.Twin = actualMap
 	return deviceTwinUpdateMessage
