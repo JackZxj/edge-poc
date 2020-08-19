@@ -133,7 +133,8 @@ func connectToMqtt() *client.Client {
 func publishToMqtt(cli *client.Client, temperature float32, humidity float32) error {
 	deviceTwinUpdate := "$hw/events/device/" + DeviceName + "/twin/update"
 
-	updateMessage := createActualUpdateMessage(strconv.Itoa(int(temperature))+"C", strconv.Itoa(int(humidity))+"%")
+	// Note: The value of updateMessage must only include upper or lowercase letters, number, english, and special letter - _ . , : / @ # and the length of value should be less than 512 bytes
+	updateMessage := createActualUpdateMessage(strconv.Itoa(int(temperature))+"C", strconv.Itoa(int(humidity))+"#")
 	twinUpdateBody, _ := json.Marshal(updateMessage)
 	lg.Infof("topic: %s\tupdate Message: %s", deviceTwinUpdate, twinUpdateBody)
 
