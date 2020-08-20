@@ -3,9 +3,14 @@
 ## env
 
 kubernetes version: v1.17.0
-kubeedge version: v1.3.1
 
-raspberry-zero w1.1 with RaspbianOS jessie
+* master: raspberrypi 4B with RaspbianOS buster 32bit
+* node: raspberry-zero w1.1 with RaspbianOS jessie 32bit
+
+kubeedge version
+
+* cloudcore: v1.3.1
+* edgecore: v1.4.0
 
 ## prepare os
 
@@ -178,32 +183,3 @@ nohup ./edgecore --config edgecore.yaml > edgecore.log 2>&1 &
 ## kubeedge for production 
 
 ...
-
-## run demo
-
-``` BASH
-# run on edge side
-cd temperature-and-humidity
-docker build -f Dockerfile-DHT11 -t edge-temperature-and-humidity:v1 .
-
-# run on cloud side
-kubectl apply -f ./temperature-and-humidity/crds/devicemodel.yaml
-kubectl apply -f ./temperature-and-humidity/crds/device.yaml
-
-# update before apply
-kubectl apply -f ./temperature-and-humidity/deployment.yaml
-
-# get info
-kubectl get device temperature-and-humidity -oyaml -w
-```
-
-``` json
-{
-    "event_id":"",
-    "timestamp":0,
-    "twin":{
-        "humidity-status":{"actual":{"value":"65%"},"metadata":{"type":"Updated humidity"}},
-        "temperature-status":{"actual":{"value":"24C"},"metadata":{"type":"Updated temperature"}}
-    }
-}
-```

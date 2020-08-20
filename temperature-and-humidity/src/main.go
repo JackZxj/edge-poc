@@ -124,8 +124,7 @@ func connectToMqtt() *client.Client {
 		ClientID: []byte("receive-client"),
 	})
 	if err != nil {
-		print(err)
-		panic(err)
+		panic(err)fmt.Println(err)
 	}
 	return cli
 }
@@ -136,7 +135,7 @@ func publishToMqtt(cli *client.Client, temperature float32, humidity float32) er
 	// Note: The value of updateMessage must only include upper or lowercase letters, number, english, and special letter - _ . , : / @ # and the length of value should be less than 512 bytes
 	updateMessage := createActualUpdateMessage(strconv.Itoa(int(temperature))+"C", strconv.Itoa(int(humidity))+"#")
 	twinUpdateBody, _ := json.Marshal(updateMessage)
-	lg.Infof("topic: %s\tupdate Message: %s", deviceTwinUpdate, twinUpdateBody)
+	// lg.Infof("topic: %s\tupdate Message: %s", deviceTwinUpdate, twinUpdateBody)
 
 	err := cli.Publish(&client.PublishOptions{
 		TopicName: []byte(deviceTwinUpdate),
