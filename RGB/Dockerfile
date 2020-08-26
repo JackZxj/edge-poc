@@ -15,4 +15,4 @@ RUN go build -v -o /go/bin/rgb-light && \
 
 WORKDIR /go/bin/
 
-CMD ["rgb-light"]
+CMD ["rgb-light", "-logtostderr=true"]
