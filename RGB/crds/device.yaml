@@ -1,0 +1,35 @@
+apiVersion: devices.kubeedge.io/v1alpha1
+kind: Device
+metadata:
+  name: rgb-light-device
+  labels:
+    description: rgb-light-device
+spec:
+  deviceModelRef:
+    name: rgb-light
+  nodeSelector:
+    nodeSelectorTerms:
+    - matchExpressions:
+      - key: 'kubernetes.io/hostname'
+        operator: In
+        values:
+        - edge-zero02
+status:
+  twins:
+    - propertyName: red-pwm
+      desired:
+        metadata:
+          type: int
+        value: ''
+    - propertyName: green-pwm
+      desired:
+        metadata:
+          type: int
+        value: ''
+    - propertyName: blue-pwm
+      desired:
+        metadata:
+          type: int
+        value: ''
+
+

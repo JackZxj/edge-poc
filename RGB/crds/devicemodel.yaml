@@ -1,0 +1,31 @@
+apiVersion: devices.kubeedge.io/v1alpha1
+kind: DeviceModel
+metadata:
+ name: rgb-light
+ namespace: default
+spec:
+ properties:
+  - name: red-pwm
+    description: The intensity of the red LED
+    type:
+      int:
+        accessMode: ReadWrite
+        maximum: 100
+        minimun: 0
+        defaultValue: 50
+  - name: green-pwm
+    description: The intensity of the green LED
+    type:
+      int:
+        accessMode: ReadWrite
+        maximum: 100
+        minimun: 0
+        defaultValue: 50
+  - name: blue-pwm
+    description: The intensity of the blue LED
+    type:
+      int:
+        accessMode: ReadWrite
+        maximum: 100
+        minimun: 0
+        defaultValue: 50

@@ -1,0 +1,32 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: rgb-light-mapper
+  labels:
+    app: rgb-light
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: rgb-light
+  template:
+    metadata:
+      labels:
+        app: rgb-light
+    spec:
+      hostNetwork: true
+      nodeSelector:
+        kubernetes.io/hostname: "edge-zero02"
+      containers:
+        - name: rgb-light
+          image: edge-rgb-light:v1
+          env:
+            - name: RPIN
+              value: "21"
+            - name: GPIN
+              value: "20"
+            - name: BPIN
+              value: "16"
+          imagePullPolicy: IfNotPresent
+          securityContext:
+            privileged: true

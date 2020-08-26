@@ -124,7 +124,7 @@ func connectToMqtt() *client.Client {
 		ClientID: []byte("receive-client"),
 	})
 	if err != nil {
-		panic(err)fmt.Println(err)
+		panic(err)
 	}
 	return cli
 }

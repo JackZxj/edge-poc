@@ -13,7 +13,7 @@ type BaseMessage struct {
 
 //TwinValue the struct of twin value
 type TwinValue struct {
-	Value    *string        `json:"value, omitempty"`
+	Value    interface{}          `json:"value, omitempty"`
 	Metadata *ValueMetadata `json:"metadata,omitempty"`
 }
 
