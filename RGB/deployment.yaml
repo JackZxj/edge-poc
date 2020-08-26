@@ -30,3 +30,10 @@ spec:
           imagePullPolicy: IfNotPresent
           securityContext:
             privileged: true
+          volumeMounts:
+            - name: config-volume
+              mountPath: /opt/kubeedge/
+      volumes:
+        - name: config-volume
+          configMap:
+            name: device-profile-config-edge-zero02     # device-profile-config-<edge_node_name>
