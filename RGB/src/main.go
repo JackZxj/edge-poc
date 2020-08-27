@@ -28,6 +28,7 @@ const (
 var rgb []string
 var defaultRGBValue []int
 var rgbPinNumber []int
+var pins []rpio.Pin
 var Token_client MQTT.Token
 var ClientOpts *MQTT.ClientOptions
 var Client MQTT.Client
@@ -54,11 +55,11 @@ func init() {
 	modelName = "RGB-LIGHT"
 	DeviceName = "rgb-light-device"
 	MQTTURL = "tcp://127.0.0.1:1884"
-	rgb = []string{"red-pwm", "green-pwm", "green-pwm"}
+	rgb = []string{"red-pwm", "green-pwm", "blue-pwm"}
 	defaultRGBValue = []int{50, 50, 50}
 	rpin, _ := strconv.Atoi(os.Getenv("RPIN"))
-	gpin, _ := strconv.Atoi(os.Getenv("RPIN"))
-	bpin, _ := strconv.Atoi(os.Getenv("RPIN"))
+	gpin, _ := strconv.Atoi(os.Getenv("GPIN"))
+	bpin, _ := strconv.Atoi(os.Getenv("BPIN"))
 	rgbPinNumber = []int{rpin, gpin, bpin}
 
 	glog.Info("Init MQTT client...")
@@ -75,6 +76,19 @@ func init() {
 }
 
 func main() {
+	err := rpio.Open()
+	if err != nil {
+		os.Exit(1)
+	}
+	defer rpio.Close()
+	pins = make([]rpio.Pin, len(rgbPinNumber))
+	for i, num := range rgbPinNumber{
+		pins[i] = rpio.Pin(num)
+		pins[i].Mode(rpio.Pwm)
+		pins[i].Freq(50)
+		pins[i].DutyCycle(uint32(defaultRGBValue[i]), 100)
+	}
+
 	changeDeviceState("online")
 	updateMessage := createActualUpdateMessage(defaultRGBValue)
 	for {
@@ -181,15 +195,17 @@ func OnSubMessageReceived(client MQTT.Client, message MQTT.Message) {
 
 //subscribe function subscribes  the device twin information through the MQTT broker
 func subscribe() {
+	getTwinResult := DeviceETPrefix + deviceID + TwinETGetResultSuffix
+	glog.Infof("Try to subscribe topic: %s", getTwinResult)
 	for {
-		getTwinResult := DeviceETPrefix + deviceID + TwinETGetResultSuffix
-		glog.Info("Try to subscribe topic: ", getTwinResult)
 		Token_client = Client.Subscribe(getTwinResult, 0, OnSubMessageReceived)
 		if Token_client.Wait() && Token_client.Error() != nil {
 			glog.Error("subscribe() Error in device twin result get is ", Token_client.Error())
 		}
 		time.Sleep(1 * time.Second)
 		if deviceTwinResult.Twin != nil {
+			temp, _ := json.Marshal(deviceTwinResult)
+			glog.Infof("Success to get device twin result: %s", temp)
 			wg.Done()
 			break
 		}
@@ -199,11 +215,6 @@ func subscribe() {
 // isUpdated Check whether the actual value is synchronized to the expectation
 func isUpdated() bool {
 	updated := true
-	// if deviceTwinResult.Twin[powerStatus].Expected != nil &&
-	// ((deviceTwinResult.Twin[powerStatus].Actual == nil) && deviceTwinResult.Twin[powerStatus].Expected != nil || 
-	//     (*deviceTwinResult.Twin[powerStatus].Expected.Value != *deviceTwinResult.Twin[powerStatus].Actual.Value)) {
-	temp, _ := json.Marshal(deviceTwinResult)
-	glog.Info("Check", temp)
 	for _, color := range rgb {
 		if deviceTwinResult.Twin[color].Expected != nil &&
 			((deviceTwinResult.Twin[color].Actual == nil && deviceTwinResult.Twin[color].Expected != nil) ||
@@ -215,14 +226,13 @@ func isUpdated() bool {
 	return updated
 }
 
-// compareValue compare Expected and Actual values, return false when Expected.Value == Expected.Value
+// compareValue compare Expected and Actual values, return false when Expected.Value == Actual.Value
 func compareValue(key string) bool {
-	ev, err1 := (*deviceTwinResult.Twin[key]).Expected.Value.(float64)
-	av, err2 := (*deviceTwinResult.Twin[key]).Expected.Value.(float64)
-	if err1 == true && err2 == true {
-		if ev == av {
-			return false
-		}
+	evs, err1 := (*deviceTwinResult.Twin[key]).Expected.Value.(string)
+	avs, err2 := (*deviceTwinResult.Twin[key]).Actual.Value.(string)
+	glog.Info("Compare values from device twin:     Expected.Value:", evs, " err1: ", err1, "     Actual.Value:", avs, " err2:", err2)
+	if err1 == true && err2 == true && evs == avs {
+		return false
 	}
 	return true
 }
@@ -230,6 +240,8 @@ func compareValue(key string) bool {
 //equateTwinValue is responsible for equating the actual state of the device to the expected state that has been set
 func equateTwinValue(updateMessage DeviceTwinUpdate) {
 	glog.Info("Watching on the device twin values for device: ", DeviceName)
+	msg, _ := json.Marshal(updateMessage)
+	glog.Infof("UpdateMessage: %s", msg)
 	wg.Add(1)
 	go subscribe()
 	getTwin(updateMessage)
@@ -239,13 +251,14 @@ func equateTwinValue(updateMessage DeviceTwinUpdate) {
 		if err != nil {
 			glog.Error("deviceTwinResult Marshal Error:", err)
 		}
-		glog.Info("DeviceTwinResult : ", msg)
+		glog.Infof("DeviceTwinResult: %s", msg)
 		glog.Info("Equating the actual  value to expected value")
 		pwmValues := make([]int, len(rgb))
 		for i, color := range rgb {
-			expectedValue := (*deviceTwinResult.Twin[color]).Expected.Value.(float64)
-			setPWM(rgbPinNumber[i], uint32(expectedValue))
-			pwmValues = append(pwmValues, int(expectedValue))
+			expectedValue := (*deviceTwinResult.Twin[color]).Expected.Value.(string)
+			v, _ := strconv.Atoi(expectedValue)
+			pins[i].DutyCycle(uint32(v), 100)
+			pwmValues = append(pwmValues, v)
 		}
 		updateMessage = createActualUpdateMessage(pwmValues)
 		changeTwinValue(updateMessage)

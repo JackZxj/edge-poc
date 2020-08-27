@@ -20,16 +20,16 @@ status:
       desired:
         metadata:
           type: int
-        value: ''
+        value: '50'
     - propertyName: green-pwm
       desired:
         metadata:
           type: int
-        value: ''
+        value: '50'
     - propertyName: blue-pwm
       desired:
         metadata:
           type: int
-        value: ''
+        value: '50'
 
 

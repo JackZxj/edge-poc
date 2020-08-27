@@ -5,14 +5,8 @@ import (
 	"io/ioutil"
 )
 
-//CONFIG_MAP_PATH contains the location of the configuration file loaded from config map
+// CONFIG_MAP_PATH contains the location of the configuration file loaded from config map
 var CONFIG_MAP_PATH = "/opt/kubeedge/deviceProfile.json"
-
-//ReadConfigFile is the structure that is used to read the config file to get configuration information from the user
-type ReadConfigFile struct {
-	DeviceName string `yaml:"device-name,omitempty"`
-	MQTTURL    string `yaml:"mqtt-url,omitempty"`
-}
 
 // DeviceProfile is structure to store in configMap
 type DeviceProfile struct {
