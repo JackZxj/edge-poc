@@ -113,7 +113,7 @@ func LoadConfigMap() error {
 
 //changeDeviceState function is used to change the state of the device
 func changeDeviceState(state string) {
-	glog.Info("Changing the state of the device to" + state)
+	glog.Info("Changing the state of the device to " + state)
 	var deviceStateUpdateMessage DeviceStateUpdate
 	deviceStateUpdateMessage.State = state
 	stateUpdateBody, err := json.Marshal(deviceStateUpdateMessage)
@@ -183,9 +183,10 @@ func OnSubMessageReceived(client MQTT.Client, message MQTT.Message) {
 func subscribe() {
 	for {
 		getTwinResult := DeviceETPrefix + deviceID + TwinETGetResultSuffix
+		glog.Info("Try to subscribe topic: ", getTwinResult)
 		Token_client = Client.Subscribe(getTwinResult, 0, OnSubMessageReceived)
 		if Token_client.Wait() && Token_client.Error() != nil {
-			glog.Error("subscribe() Error in device twin result get  is ", Token_client.Error())
+			glog.Error("subscribe() Error in device twin result get is ", Token_client.Error())
 		}
 		time.Sleep(1 * time.Second)
 		if deviceTwinResult.Twin != nil {
