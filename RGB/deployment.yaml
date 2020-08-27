@@ -20,13 +20,13 @@ spec:
       containers:
         - name: rgb-light
           image: edge-rgb-light:v1
-          env:
+          env:              # NOTE: Pwm is possible only for pins 12, 13, 18, 19. https://github.com/stianeikeland/go-rpio/blob/v4.2.0/rpio.go#L238
             - name: RPIN
-              value: "21"
+              value: "12"
             - name: GPIN
-              value: "20"
+              value: "13"
             - name: BPIN
-              value: "16"
+              value: "18"
           imagePullPolicy: IfNotPresent
           securityContext:
             privileged: true

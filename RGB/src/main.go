@@ -199,6 +199,11 @@ func subscribe() {
 // isUpdated Check whether the actual value is synchronized to the expectation
 func isUpdated() bool {
 	updated := true
+	// if deviceTwinResult.Twin[powerStatus].Expected != nil &&
+	// ((deviceTwinResult.Twin[powerStatus].Actual == nil) && deviceTwinResult.Twin[powerStatus].Expected != nil || 
+	//     (*deviceTwinResult.Twin[powerStatus].Expected.Value != *deviceTwinResult.Twin[powerStatus].Actual.Value)) {
+	temp, _ := json.Marshal(deviceTwinResult)
+	glog.Info("Check", temp)
 	for _, color := range rgb {
 		if deviceTwinResult.Twin[color].Expected != nil &&
 			((deviceTwinResult.Twin[color].Actual == nil && deviceTwinResult.Twin[color].Expected != nil) ||

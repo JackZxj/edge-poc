@@ -6,7 +6,9 @@ RUN echo http://mirrors.ustc.edu.cn/alpine/v3.10/main > /etc/apk/repositories; \
 
 COPY . $GOPATH/src/RGB
 
-ENV GO111MODULE=off RPIN=21 GPIN=20 BPIN=16
+# NOTE: Pwm is possible only for pins 12, 13, 18, 19. Pin mode: BCM
+# https://github.com/stianeikeland/go-rpio/blob/v4.2.0/rpio.go#L238
+ENV GO111MODULE=off RPIN=12 GPIN=13 BPIN=19
 
 WORKDIR $GOPATH/src/RGB/src
 
