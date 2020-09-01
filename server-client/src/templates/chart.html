@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+    <title>show chart</title>
+
+    <script src="https://code.highcharts.com.cn/jquery/jquery-1.8.3.min.js"></script>
+    <!-- 引入 highcharts.js -->
+    <script src="http://cdn.highcharts.com.cn/highcharts/highcharts.js"></script>
+</head>
+
+<body>
+    <h2>show chart:</h2>
+    <!-- 图表容器 DOM -->
+    <div id="container"
+         style="width: 600px;height:400px;"></div>
+    <div>
+        <form>
+            <label for="r-value">r-value</label>
+            <input type="text"
+                   name="r-value"
+                   id="r-value"
+                   required>
+            <label for="g-value">g-value</label>
+            <input type="text"
+                   name="g-value"
+                   id="g-value"
+                   required>
+            <button type="reset">reset</button>
+            <button type="button" onclick="onSubmit()">submit</button>
+        </form>
+    </div>
+
+    <script>
+        var chart = null;
+        Highcharts.setOptions({
+            global: {
+                useUTC: false
+            }
+        });
+        // 图表配置
+        var options = {
+            credits: {
+                enabled: false
+            },
+            chart: {
+                type: 'line',                          //指定图表的类型，默认是折线图（line）
+                events: {
+                    load: function () {
+                        setInterval(() => {
+                            chart.update({
+                                series: getValues()
+                            })
+                        }, 5000)
+                    }
+                }
+            },
+            title: {
+                text: 'get device values'                 // 标题
+            },
+            xAxis: {
+                type: 'datetime',
+            },
+            yAxis: {
+                title: {
+                    text: 'values'                // y 轴标题
+                }
+            },
+            series: getValues()
+        };
+        // 图表初始化函数
+        chart = Highcharts.chart('container', options);
+        function getValues() {
+            var series = [];
+            $.ajax({
+                type: 'GET',
+                url: '/values',
+                async: false,
+                success: function (data) {
+                    data.forEach(element => {
+                        series.push({
+                            name: element.name + '-except',
+                            data: element.values.except
+                        })
+                        series.push({
+                            name: element.name + '-actual',
+                            data: element.values.actual
+                        })
+                    });
+                },
+                cache: false
+            })
+            return series
+        }
+        function onSubmit() {
+            d = {
+                "r-value": $("#r-value").val(),
+                "g-value": $("#g-value").val(),
+            }
+            console.log(d);
+            $.post("/update", d, function(data){
+                alert(data)
+            })
+        }
+    </script>
+</body>
+
+</html>

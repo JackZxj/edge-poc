@@ -120,7 +120,7 @@ func connectToMqtt() *client.Client {
 	// Connect to the MQTT Server.
 	err := cli.Connect(&client.ConnectOptions{
 		Network:  "tcp",
-		Address:  "192.168.137.65:1883",
+		Address:  "127.0.0.1:1883",
 		ClientID: []byte("receive-client"),
 	})
 	if err != nil {
