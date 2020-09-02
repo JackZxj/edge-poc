@@ -19,7 +19,7 @@ import (
 )
 
 // DeviceName is the name in device.yaml
-var DeviceName = "temperature-and-humidity"
+var DeviceName = os.Getenv("DEVICE_NAME")
 
 var lg = logger.NewPackageLogger("main",
 	logger.DebugLevel,

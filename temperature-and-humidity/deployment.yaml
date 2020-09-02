@@ -23,6 +23,8 @@ spec:
         env:
         - name: DHT11PIN
           value: "18"
+        - name: DEVICE_NAME   # device name in crds/device.yaml
+          value: "temperature-and-humidity"
         imagePullPolicy: IfNotPresent
         securityContext:
           privileged: true

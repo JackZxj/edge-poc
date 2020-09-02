@@ -8,7 +8,7 @@ COPY . $GOPATH/src/RGB
 
 # NOTE: Pwm is possible only for pins 12, 13, 18, 19. Pin mode: BCM
 # https://github.com/stianeikeland/go-rpio/blob/v4.2.0/rpio.go#L238
-ENV GO111MODULE=off RPIN=12 GPIN=13 BPIN=19
+ENV GO111MODULE=off RPIN=12 GPIN=13 BPIN=19 DEVICE_NAME=rgb-light-device
 
 WORKDIR $GOPATH/src/RGB/src
 

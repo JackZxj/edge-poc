@@ -27,6 +27,8 @@ spec:
               value: "13"
             - name: BPIN
               value: "19"
+            - name: DEVICE_NAME
+              value: "rgb-light-device"   # device name in crds/device.yaml
           imagePullPolicy: IfNotPresent
           securityContext:
             privileged: true

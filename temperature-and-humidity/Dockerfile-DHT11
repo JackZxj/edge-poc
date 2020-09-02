@@ -6,7 +6,7 @@ RUN echo http://mirrors.ustc.edu.cn/alpine/v3.10/main > /etc/apk/repositories; \
 
 COPY . $GOPATH/src/temperature-and-humidity
 
-ENV GO111MODULE=off DHT11PIN=11
+ENV GO111MODULE=off DHT11PIN=11 DEVICE_NAME=temperature-and-humidity
 
 WORKDIR $GOPATH/src/temperature-and-humidity/src
 

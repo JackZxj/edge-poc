@@ -54,6 +54,8 @@ func init() {
 
 	modelName = "RGB-LIGHT"
 	DeviceName = "rgb-light-device"
+	DeviceName = os.Getenv("DEVICE_NAME")
+
 	MQTTURL = "tcp://127.0.0.1:1884"
 	rgb = []string{"red-pwm", "green-pwm", "blue-pwm"}
 	defaultRGBValue = []int{50, 50, 50}
