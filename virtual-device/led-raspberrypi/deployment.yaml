@@ -1,0 +1,31 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: led-light-mapper-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: led-light-mapper
+  template:
+    metadata:
+      labels:
+        app: led-light-mapper
+    spec:
+      hostNetwork: true
+      nodeSelector:
+        kubernetes.io/hostname: "edge-zero01"
+      containers:
+      - name: led-light-mapper-container
+        image: led-light-mapper:v1.1
+        imagePullPolicy: IfNotPresent
+        securityContext:
+          privileged: true
+        volumeMounts:
+        - name: config-volume
+          mountPath: /opt/kubeedge/
+      volumes:
+      - name: config-volume
+        configMap:
+          name: device-profile-config-edge-zero01
+      restartPolicy: Always
